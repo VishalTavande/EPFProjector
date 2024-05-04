@@ -1,5 +1,5 @@
 # EPF Projector / Calculator
-This simple project enables to calculate future projections on EPF balance year wise.
+This simple project helps to calculate future projections on EPF balance year wise.
 
 ## How to Use
 Go to file `application.properties` and fill out the details as per requirement

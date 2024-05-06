@@ -3,11 +3,13 @@ package org.vishalta.epfcalculator.format;
 import org.vishalta.epfcalculator.metadata.ColumnMetadata;
 import org.vishalta.epfcalculator.metadata.Type;
 import org.vishalta.epfcalculator.model.Balance;
+import org.vishalta.epfcalculator.model.EPFBalance;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.generate;
@@ -36,8 +38,18 @@ public class TabularFormatter extends Formatter {
     }
 
     @Override
-    public void printEPFProjection(List<Balance> epfProjectionForYear, int currentYear, double currentBalance) {
-        System.out.printf("Current Balance: %15f%10sYear: %4d - %4d%n", currentBalance, generatePattern(10, ' '), currentYear, (currentYear+1));
+    public void formatEPFProjection(Map<String, EPFBalance> epfBalanceMap) {
+        epfBalanceMap.entrySet().stream().forEach(TabularFormatter::accept);
+    }
+
+    private static void accept(Map.Entry<String, EPFBalance> entry) {
+        String financialYear = entry.getKey();
+        EPFBalance epfBalance = entry.getValue();
+        formatData(epfBalance.getBalanceList(), financialYear, epfBalance.getPreviousYearBalance());
+    }
+
+    private static void formatData(List<Balance> epfProjectionForYear, String financialYear, double currentBalance) {
+        System.out.printf("Current Balance: %15f%10sYear: %4s%n", currentBalance, generatePattern(10, ' '), financialYear);
         generateDoubleDashedLine("|%n");
 
         columnMetadataList.forEach(column -> System.out.printf("| %"+column.getWidth()+"s ", column.getName()));

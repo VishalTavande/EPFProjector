@@ -29,15 +29,23 @@ public class HTMLFormatter extends Formatter {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append("<head></head>");
-        sb.append("<body>");
+        sb.append("<body style=\"font-family:'Ubuntu', sans-serif;\">");
 
         epfProjectionForYear.entrySet().forEach(entry -> {
             String financialYear = entry.getKey();
             EPFBalance epfBalance = entry.getValue();
-            sb.append("<h1>Current Balance: " + epfBalance.getPreviousYearBalance() + "\tYear: " + financialYear + "</h1><break/>");
+            sb.append("<br/>");
+            sb.append("<table><tr>");
+            sb.append("<td><h3>Current Balance: </h3></td>");
+            sb.append("<td style=\"padding-bottom: 17px\">" + epfBalance.getPreviousYearBalance() + "</td>");
+            sb.append("<td/>");
+            sb.append("<td><h3>Year: </h3></td>");
+            sb.append("<td style=\"padding-bottom: 17px\">" + financialYear + "</td>");
+            sb.append("</tr></table>");
+
             sb.append("<table>");
             sb.append("<tbody>");
-            sb.append("<tr style=\"height: 21px;\">");
+            sb.append("<tr style=\"height: 21px; background-color: #D6D4D4\">");
             encloseTD(sb, "Month");
             encloseTD(sb, "Employee Share");
             encloseTD(sb, "Employer Share");
@@ -47,13 +55,13 @@ public class HTMLFormatter extends Formatter {
             sb.append("</tr>");
 
             epfBalance.getBalanceList().forEach(balance -> {
-                sb.append("<tr style=\"height: 21px;\">");
+                sb.append("<tr style=\"height: 21px;" + (balance.getDate() != null ? "font-weight: lighter;" : "")+ "\">");
                 encloseTD(sb, balance.getDate() != null ? balance.getDate().getMonth().toString() : "" );
-                encloseTD(sb, String.valueOf(balance.getEmployeeShare()));
-                encloseTD(sb, String.valueOf(balance.getEmployerShare()));
-                encloseTD(sb, String.valueOf(balance.getInterestRate()));
-                encloseTD(sb, String.valueOf(balance.getInterest()));
-                encloseTD(sb, String.valueOf(balance.getBalanceAmount()));
+                encloseTD(sb, balance.getEmployeeShare() == 0 ? "" : String.valueOf(balance.getEmployeeShare()));
+                encloseTD(sb, balance.getEmployerShare() == 0 ? "" : String.valueOf(balance.getEmployerShare()));
+                encloseTD(sb, balance.getInterestRate() == 0 ? "" : String.valueOf(balance.getInterestRate()));
+                encloseTD(sb, balance.getInterest() == 0 ? "" : String.valueOf(balance.getInterest()));
+                encloseTD(sb, balance.getBalanceAmount() == 0 ? "" : String.valueOf(balance.getBalanceAmount()));
                 sb.append("</tr>");
             });
 

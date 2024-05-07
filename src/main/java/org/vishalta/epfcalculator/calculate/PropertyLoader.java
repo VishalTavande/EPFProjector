@@ -30,6 +30,7 @@ public class PropertyLoader {
             applicationPropertyData.setTotalYears(Integer.parseInt(getProperty("number_of_years", "5")));
             applicationPropertyData.setFormatter(Formatter.getInstance(getProperty("formatter", "TabularFormatter")));
             applicationPropertyData.setHtmlReportName(getProperty("html_report_name", "EPF_Projection"));
+            applicationPropertyData.setDecimalPlaces(Integer.parseInt(getProperty("decimal_places", "2")));
         } catch (IOException e) {
             System.err.println("Unable to read the application.properties file");
             throw new RuntimeException(e);

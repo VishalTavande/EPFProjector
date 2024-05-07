@@ -10,8 +10,8 @@ public class ApplicationPropertyData {
     private double annualRaise;
     private Formatter formatter;
     private int totalYears;
-
     private String htmlReportName;
+    private int decimalPlaces;
 
     public double getInterest() {
         return interest;
@@ -67,5 +67,13 @@ public class ApplicationPropertyData {
 
     public void setHtmlReportName(String htmlReportName) {
         this.htmlReportName = htmlReportName;
+    }
+
+    public int getDecimalPlaces() {
+        return decimalPlaces;
+    }
+
+    public void setDecimalPlaces(int decimalPlaces) {
+        this.decimalPlaces = decimalPlaces;
     }
 }

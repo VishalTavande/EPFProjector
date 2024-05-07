@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Stream.generate;
+import static org.vishalta.epfcalculator.util.Utils.generatePattern;
 
 public class TabularFormatter extends Formatter {
 
@@ -108,15 +107,4 @@ public class TabularFormatter extends Formatter {
         System.out.printf(format);
     }
 
-    private static String generatePattern(int size) {
-        return generate(() -> "=")
-                .limit(size)
-                .collect(joining());
-    }
-
-    private static String generatePattern(int size, char ch) {
-        return generate(() -> String.valueOf(ch))
-                .limit(size)
-                .collect(joining());
-    }
 }

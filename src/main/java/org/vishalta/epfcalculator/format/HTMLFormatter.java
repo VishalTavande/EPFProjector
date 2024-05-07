@@ -3,10 +3,13 @@ package org.vishalta.epfcalculator.format;
 import org.vishalta.epfcalculator.calculate.Calculator;
 import org.vishalta.epfcalculator.model.EPFBalance;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+
+import static org.vishalta.epfcalculator.calculate.Calculator.decimalFormat;
 
 public class HTMLFormatter extends Formatter {
 
@@ -17,6 +20,7 @@ public class HTMLFormatter extends Formatter {
             FileOutputStream fos = new FileOutputStream(fileName);
             String htmlText = generateHtml(epfProjectionForYear);
             fos.write(htmlText.getBytes());
+            System.out.println("The EPF Projection report is generated at path => " + new File(fileName).getAbsolutePath());
         } catch (FileNotFoundException e) {
             System.err.println("Unable to find " + fileName);
             throw new RuntimeException(e);
@@ -37,7 +41,7 @@ public class HTMLFormatter extends Formatter {
             sb.append("<br/>");
             sb.append("<table><tr>");
             sb.append("<td><h3>Current Balance: </h3></td>");
-            sb.append("<td style=\"padding-bottom: 17px\">" + epfBalance.getPreviousYearBalance() + "</td>");
+            sb.append("<td style=\"padding-bottom: 17px\">" + decimalFormat.format(epfBalance.getPreviousYearBalance()) + "</td>");
             sb.append("<td/>");
             sb.append("<td><h3>Year: </h3></td>");
             sb.append("<td style=\"padding-bottom: 17px\">" + financialYear + "</td>");
@@ -57,11 +61,11 @@ public class HTMLFormatter extends Formatter {
             epfBalance.getBalanceList().forEach(balance -> {
                 sb.append("<tr style=\"height: 21px;" + (balance.getDate() != null ? "font-weight: lighter;" : "")+ "\">");
                 encloseTD(sb, balance.getDate() != null ? balance.getDate().getMonth().toString() : "" );
-                encloseTD(sb, balance.getEmployeeShare() == 0 ? "" : String.valueOf(balance.getEmployeeShare()));
-                encloseTD(sb, balance.getEmployerShare() == 0 ? "" : String.valueOf(balance.getEmployerShare()));
-                encloseTD(sb, balance.getInterestRate() == 0 ? "" : String.valueOf(balance.getInterestRate()));
-                encloseTD(sb, balance.getInterest() == 0 ? "" : String.valueOf(balance.getInterest()));
-                encloseTD(sb, balance.getBalanceAmount() == 0 ? "" : String.valueOf(balance.getBalanceAmount()));
+                encloseTD(sb, balance.getEmployeeShare() == 0 ? "" : decimalFormat.format(balance.getEmployeeShare()));
+                encloseTD(sb, balance.getEmployerShare() == 0 ? "" : decimalFormat.format(balance.getEmployerShare()));
+                encloseTD(sb, balance.getInterestRate() == 0 ? "" : decimalFormat.format(balance.getInterestRate()));
+                encloseTD(sb, balance.getInterest() == 0 ? "" : decimalFormat.format(balance.getInterest()));
+                encloseTD(sb, balance.getBalanceAmount() == 0 ? "" : decimalFormat.format(balance.getBalanceAmount()));
                 sb.append("</tr>");
             });
 

@@ -1,9 +1,7 @@
 package org.vishalta.epfcalculator.format;
 
-import org.vishalta.epfcalculator.model.Balance;
 import org.vishalta.epfcalculator.model.EPFBalance;
 
-import java.util.List;
 import java.util.Map;
 
 public abstract class Formatter {
@@ -13,6 +11,9 @@ public abstract class Formatter {
         if(TabularFormatter.class.getSimpleName().equals(name)) {
             return new TabularFormatter();
         }
-        return null;
+        if(HTMLFormatter.class.getSimpleName().equals(name)) {
+            return new HTMLFormatter();
+        }
+        throw new RuntimeException("Formatter is not found or incorrect value is provided, please check if the application.properties file has correct formatter value.");
     }
 }

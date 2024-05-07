@@ -11,6 +11,8 @@ public class ApplicationPropertyData {
     private Formatter formatter;
     private int totalYears;
 
+    private String htmlReportName;
+
     public double getInterest() {
         return interest;
     }
@@ -57,5 +59,13 @@ public class ApplicationPropertyData {
 
     public void setTotalYears(int totalYears) {
         this.totalYears = totalYears;
+    }
+
+    public String getHtmlReportName() {
+        return htmlReportName;
+    }
+
+    public void setHtmlReportName(String htmlReportName) {
+        this.htmlReportName = htmlReportName;
     }
 }

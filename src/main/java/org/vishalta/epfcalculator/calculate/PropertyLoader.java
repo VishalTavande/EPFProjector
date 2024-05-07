@@ -29,6 +29,7 @@ public class PropertyLoader {
             applicationPropertyData.setCurrentBalance(Double.parseDouble(getProperty("current_balance", "0")));
             applicationPropertyData.setTotalYears(Integer.parseInt(getProperty("number_of_years", "5")));
             applicationPropertyData.setFormatter(Formatter.getInstance(getProperty("formatter", "TabularFormatter")));
+            applicationPropertyData.setHtmlReportName(getProperty("html_report_name", "EPF_Projection"));
         } catch (IOException e) {
             System.err.println("Unable to read the application.properties file");
             throw new RuntimeException(e);

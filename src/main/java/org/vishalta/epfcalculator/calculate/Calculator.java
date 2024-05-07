@@ -10,10 +10,10 @@ import java.util.*;
 
 public class Calculator {
 
-    private final ApplicationPropertyData applicationPropertyData;
+    public static final ApplicationPropertyData applicationPropertyData = PropertyLoader.loadProperties();
 
     public Calculator() {
-        applicationPropertyData = PropertyLoader.loadProperties();
+
     }
 
     public void calculate() {

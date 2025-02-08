@@ -15,9 +15,8 @@ public class HTMLFormatter extends Formatter {
 
     @Override
     public void formatEPFProjection(Map<String, EPFBalance> epfProjectionForYear) {
-        String fileName = Calculator.applicationPropertyData.getHtmlReportName() + ".html";
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
+        String fileName = "target/" + Calculator.applicationPropertyData.getHtmlReportName() + ".html";
+        try (FileOutputStream fos = new FileOutputStream(fileName)){
             String htmlText = generateHtml(epfProjectionForYear);
             fos.write(htmlText.getBytes());
             System.out.println("The EPF Projection report is generated at path => " + new File(fileName).getAbsolutePath());
@@ -35,16 +34,14 @@ public class HTMLFormatter extends Formatter {
         sb.append("<head></head>");
         sb.append("<body style=\"font-family:'Ubuntu', sans-serif;\">");
 
-        epfProjectionForYear.entrySet().forEach(entry -> {
-            String financialYear = entry.getKey();
-            EPFBalance epfBalance = entry.getValue();
+        epfProjectionForYear.forEach((financialYear, epfBalance) -> {
             sb.append("<br/>");
             sb.append("<table><tr>");
             sb.append("<td><h3>Current Balance: </h3></td>");
-            sb.append("<td style=\"padding-bottom: 17px\">" + decimalFormat.format(epfBalance.getPreviousYearBalance()) + "</td>");
+            sb.append("<td style=\"padding-bottom: 17px\">").append(decimalFormat.format(epfBalance.getPreviousYearBalance())).append("</td>");
             sb.append("<td/>");
             sb.append("<td><h3>Year: </h3></td>");
-            sb.append("<td style=\"padding-bottom: 17px\">" + financialYear + "</td>");
+            sb.append("<td style=\"padding-bottom: 17px\">").append(financialYear).append("</td>");
             sb.append("</tr></table>");
 
             sb.append("<table>");
@@ -59,8 +56,8 @@ public class HTMLFormatter extends Formatter {
             sb.append("</tr>");
 
             epfBalance.getBalanceList().forEach(balance -> {
-                sb.append("<tr style=\"height: 21px;" + (balance.getDate() != null ? "font-weight: lighter;" : "")+ "\">");
-                encloseTD(sb, balance.getDate() != null ? balance.getDate().getMonth().toString() : "" );
+                sb.append("<tr style=\"height: 21px;").append(balance.getDate() != null ? "font-weight: lighter;" : "").append("\">");
+                encloseTD(sb, balance.getDate() != null ? balance.getDate().getMonth().toString() : "");
                 encloseTD(sb, balance.getEmployeeShare() == 0 ? "" : decimalFormat.format(balance.getEmployeeShare()));
                 encloseTD(sb, balance.getEmployerShare() == 0 ? "" : decimalFormat.format(balance.getEmployerShare()));
                 encloseTD(sb, balance.getInterestRate() == 0 ? "" : decimalFormat.format(balance.getInterestRate()));
@@ -78,7 +75,7 @@ public class HTMLFormatter extends Formatter {
         return sb.toString();
     }
 
-    private StringBuilder encloseTD(StringBuilder sb, String data) {
-        return sb.append("<td style=\"width: 151.5px; height: 21px;\"><strong>&nbsp;" + data + "</strong></td>");
+    private void encloseTD(StringBuilder sb, String data) {
+        sb.append("<td style=\"width: 151.5px; height: 21px;\"><strong>&nbsp;").append(data).append("</strong></td>");
     }
 }

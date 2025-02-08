@@ -7,9 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.Map;
-
-import static org.vishalta.epfcalculator.calculate.Calculator.decimalFormat;
 
 public class HTMLFormatter extends Formatter {
 
@@ -29,6 +28,7 @@ public class HTMLFormatter extends Formatter {
     }
 
     private String generateHtml(Map<String, EPFBalance> epfProjectionForYear) throws FileNotFoundException {
+        NumberFormat numberFormatter = getNumberFormatter();
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append("<head></head>");
@@ -38,7 +38,7 @@ public class HTMLFormatter extends Formatter {
             sb.append("<br/>");
             sb.append("<table><tr>");
             sb.append("<td><h3>Current Balance: </h3></td>");
-            sb.append("<td style=\"padding-bottom: 17px\">").append(decimalFormat.format(epfBalance.getPreviousYearBalance())).append("</td>");
+            sb.append("<td style=\"padding-bottom: 17px\">").append(numberFormatter.format(epfBalance.getPreviousYearBalance())).append("</td>");
             sb.append("<td/>");
             sb.append("<td><h3>Year: </h3></td>");
             sb.append("<td style=\"padding-bottom: 17px\">").append(financialYear).append("</td>");
@@ -58,11 +58,11 @@ public class HTMLFormatter extends Formatter {
             epfBalance.getBalanceList().forEach(balance -> {
                 sb.append("<tr style=\"height: 21px;").append(balance.getDate() != null ? "font-weight: lighter;" : "").append("\">");
                 encloseTD(sb, balance.getDate() != null ? balance.getDate().getMonth().toString() : "");
-                encloseTD(sb, balance.getEmployeeShare() == 0 ? "" : decimalFormat.format(balance.getEmployeeShare()));
-                encloseTD(sb, balance.getEmployerShare() == 0 ? "" : decimalFormat.format(balance.getEmployerShare()));
-                encloseTD(sb, balance.getInterestRate() == 0 ? "" : decimalFormat.format(balance.getInterestRate()));
-                encloseTD(sb, balance.getInterest() == 0 ? "" : decimalFormat.format(balance.getInterest()));
-                encloseTD(sb, balance.getBalanceAmount() == 0 ? "" : decimalFormat.format(balance.getBalanceAmount()));
+                encloseTD(sb, balance.getEmployeeShare() == 0 ? "" : numberFormatter.format(balance.getEmployeeShare()));
+                encloseTD(sb, balance.getEmployerShare() == 0 ? "" : numberFormatter.format(balance.getEmployerShare()));
+                encloseTD(sb, balance.getInterestRate() == 0 ? "" : numberFormatter.format(balance.getInterestRate()));
+                encloseTD(sb, balance.getInterest() == 0 ? "" : numberFormatter.format(balance.getInterest()));
+                encloseTD(sb, balance.getBalanceAmount() == 0 ? "" : numberFormatter.format(balance.getBalanceAmount()));
                 sb.append("</tr>");
             });
 
@@ -72,7 +72,7 @@ public class HTMLFormatter extends Formatter {
 
         sb.append("</body>");
         sb.append("</html>");
-        return sb.toString();
+        return sb.toString().replace("₹","&#8377;");
     }
 
     private void encloseTD(StringBuilder sb, String data) {

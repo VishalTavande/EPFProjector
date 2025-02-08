@@ -3,9 +3,7 @@ package org.vishalta.epfcalculator.calculate;
 import org.vishalta.epfcalculator.model.ApplicationPropertyData;
 import org.vishalta.epfcalculator.model.Balance;
 import org.vishalta.epfcalculator.model.EPFBalance;
-import org.vishalta.epfcalculator.util.Utils;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
@@ -13,7 +11,6 @@ import java.util.*;
 public class Calculator {
 
     public static final ApplicationPropertyData applicationPropertyData = PropertyLoader.loadProperties();
-    public static DecimalFormat decimalFormat = new DecimalFormat("#." + Utils.generatePattern(applicationPropertyData.getDecimalPlaces(), '#'));
 
     public Calculator() {
 

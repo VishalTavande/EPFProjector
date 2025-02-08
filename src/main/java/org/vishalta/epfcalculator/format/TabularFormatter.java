@@ -7,6 +7,7 @@ import org.vishalta.epfcalculator.model.EPFBalance;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,17 +39,18 @@ public class TabularFormatter extends Formatter {
 
     @Override
     public void formatEPFProjection(Map<String, EPFBalance> epfBalanceMap) {
-        epfBalanceMap.entrySet().stream().forEach(TabularFormatter::accept);
+        epfBalanceMap.entrySet().forEach(this::accept);
     }
 
-    private static void accept(Map.Entry<String, EPFBalance> entry) {
+    private void accept(Map.Entry<String, EPFBalance> entry) {
         String financialYear = entry.getKey();
         EPFBalance epfBalance = entry.getValue();
         formatData(epfBalance.getBalanceList(), financialYear, epfBalance.getPreviousYearBalance());
     }
 
-    private static void formatData(List<Balance> epfProjectionForYear, String financialYear, double currentBalance) {
-        System.out.printf("Current Balance: %15f%10sYear: %4s%n", currentBalance, generatePattern(10, ' '), financialYear);
+    private void formatData(List<Balance> epfProjectionForYear, String financialYear, double currentBalance) {
+        NumberFormat numberFormatter = getNumberFormatter();
+        System.out.printf("Current Balance: %15s%10sYear: %4s%n", numberFormatter.format(currentBalance), generatePattern(10, ' '), financialYear);
         generateDoubleDashedLine("|%n");
 
         columnMetadataList.forEach(column -> System.out.printf("| %"+column.getWidth()+"s ", column.getName()));
@@ -61,12 +63,12 @@ public class TabularFormatter extends Formatter {
                 .forEach(
                         entry -> System.out.printf(
                                 "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(MONTH)).findFirst().get().getWidth()+"s " +
-                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYEE_SHARE)).findFirst().get().getWidth()+"f " +
-                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYER_SHARE)).findFirst().get().getWidth()+"f " +
+                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYEE_SHARE)).findFirst().get().getWidth()+"s " +
+                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYER_SHARE)).findFirst().get().getWidth()+"s " +
                                 "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST_RATE)).findFirst().get().getWidth()+"f " +
-                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST)).findFirst().get().getWidth()+"f " +
-                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(BALANCE)).findFirst().get().getWidth()+"f |%n",
-                                entry.getDate().getMonth(), entry.getEmployeeShare(), entry.getEmployerShare(), entry.getInterestRate(), entry.getInterest(), entry.getBalanceAmount())
+                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST)).findFirst().get().getWidth()+"s " +
+                                "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(BALANCE)).findFirst().get().getWidth()+"s |%n",
+                                entry.getDate().getMonth(), numberFormatter.format(entry.getEmployeeShare()), numberFormatter.format(entry.getEmployerShare()), entry.getInterestRate(), numberFormatter.format(entry.getInterest()), numberFormatter.format(entry.getBalanceAmount()))
                 );
         Balance lastRow = epfProjectionForYear.stream()
                 .filter(e -> e.getDate() == null)
@@ -77,24 +79,24 @@ public class TabularFormatter extends Formatter {
                         "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYEE_SHARE)).findFirst().get().getWidth()+"s " +
                         "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYER_SHARE)).findFirst().get().getWidth()+"s " +
                         "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST_RATE)).findFirst().get().getWidth()+"s " +
-                        "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST)).findFirst().get().getWidth()+"f " +
+                        "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST)).findFirst().get().getWidth()+"s " +
                         "| %"+columnMetadataList.stream().filter(x -> x.getName().equals(BALANCE)).findFirst().get().getWidth()+"s |%n",
                 generatePattern(columnMetadataList.stream().filter(x -> x.getName().equals(MONTH)).findFirst().get().getWidth(), ' '),
                 generatePattern(columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYEE_SHARE)).findFirst().get().getWidth(), ' '),
                 generatePattern(columnMetadataList.stream().filter(x -> x.getName().equals(EMPLOYER_SHARE)).findFirst().get().getWidth(), ' '),
                 generatePattern(columnMetadataList.stream().filter(x -> x.getName().equals(INTEREST_RATE)).findFirst().get().getWidth(), ' '),
-                lastRow.getInterest(),
+                numberFormatter.format(lastRow.getInterest()),
                 generatePattern(columnMetadataList.stream().filter(x -> x.getName().equals(BALANCE)).findFirst().get().getWidth(), ' '));
 
         generateDoubleDashedLine("|%n");
 
         columnMetadataList.forEach(column -> {
             if(column.getName().equals(INTEREST)) {
-                System.out.printf("| %"+column.getWidth()+"s ", BigDecimal.valueOf(epfProjectionForYear.stream().mapToDouble(Balance::getInterest).sum()).round(MATH_CONTEXT));
+                System.out.printf("| %"+column.getWidth()+"s ", numberFormatter.format(BigDecimal.valueOf(epfProjectionForYear.stream().mapToDouble(Balance::getInterest).sum()).round(MATH_CONTEXT)));
             } else if(column.getName().equals(BALANCE)) {
                 System.out.printf("| %"+column.getWidth()+"s ",
-                        BigDecimal.valueOf(epfProjectionForYear.stream().mapToDouble(Balance::getInterest).sum() +
-                                epfProjectionForYear.stream().filter(x -> x.getDate() != null).mapToDouble(Balance::getBalanceAmount).max().getAsDouble()).round(MATH_CONTEXT));
+                        numberFormatter.format(BigDecimal.valueOf(epfProjectionForYear.stream().mapToDouble(Balance::getInterest).sum() +
+                                epfProjectionForYear.stream().filter(x -> x.getDate() != null).mapToDouble(Balance::getBalanceAmount).max().getAsDouble()).round(MATH_CONTEXT)));
             } else
                 System.out.printf("| %"+column.getWidth()+"s ", generatePattern(column.getWidth(), ' '));
         });
